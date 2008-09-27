@@ -6,7 +6,8 @@ GOBJECT_LIBS := $(shell pkg-config --libs gobject-2.0)
 
 CFLAGS += -Wall
 
-objects := pecan_session.o
+objects := pecan_session.o \
+	   pecan_ns.o
 
 sources := $(objects:.o=.c)
 deps := $(objects:.o=.d)
