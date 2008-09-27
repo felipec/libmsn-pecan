@@ -55,6 +55,19 @@ pecan_session_free (PecanSession *session)
     g_object_unref (G_OBJECT (session));
 }
 
+void
+pecan_session_connect (PecanSession *session,
+		       const gchar *host,
+		       gint port)
+{
+    /* notification connect */
+}
+
+void
+pecan_session_disconnect (PecanSession *session)
+{
+}
+
 /* GObject stuff. */
 
 static void
