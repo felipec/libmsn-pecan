@@ -155,14 +155,12 @@ class_init (gpointer g_class,
 
 	param_spec = g_param_spec_string ("username", "Username",
 					  "The username", NULL,
-					  G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE |
-					  G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB);
+					  G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 	g_object_class_install_property (gobject_class, PROP_USERNAME, param_spec);
 
 	param_spec = g_param_spec_string ("password", "Password",
 					  "The password", NULL,
-					  G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE |
-					  G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB);
+					  G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 	g_object_class_install_property (gobject_class, PROP_PASSWORD, param_spec);
     }
 
