@@ -17,6 +17,7 @@
  */
 
 #include "pecan_session.h"
+#include "pecan_ns.h"
 
 static gpointer parent_class;
 
@@ -24,6 +25,7 @@ struct PecanSessionPrivate
 {
     gchar *username;
     gchar *password;
+    PecanNs *ns;
 };
 
 enum
@@ -38,7 +40,6 @@ pecan_session_new (const gchar *username,
 {
     PecanSession *session;
 
-    /* session = PECAN_SESSION (g_type_create_instance (PECAN_SESSION_TYPE)); */
     session = PECAN_SESSION (g_object_new (PECAN_SESSION_TYPE,
 					   "username", username,
 					   "password", password,
@@ -60,7 +61,7 @@ pecan_session_connect (PecanSession *session,
 		       const gchar *host,
 		       gint port)
 {
-    /* notification connect */
+    pecan_ns_connect (session->priv->ns, host, port);
 }
 
 void
@@ -79,6 +80,7 @@ instance_init (GTypeInstance *instance,
     self->priv = G_TYPE_INSTANCE_GET_PRIVATE (instance, PECAN_SESSION_TYPE, PecanSessionPrivate);
 
     g_debug ("instance init");
+    self->priv->ns = pecan_ns_new (self);
 }
 
 static void
