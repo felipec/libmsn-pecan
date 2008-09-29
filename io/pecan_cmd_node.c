@@ -26,11 +26,7 @@
 
 #include <string.h>
 
-#ifdef HAVE_LIBPURPLE
-#include "fix_purple_win32.h"
-#endif /* HAVE_LIBPURPLE */
-
-static PecanNodeClass *parent_class = NULL;
+static PecanNodeClass *parent_class;
 
 struct PecanCmdNodePrivate
 {
@@ -353,10 +349,11 @@ instance_init (GTypeInstance *instance,
 GType
 pecan_cmd_node_get_type (void)
 {
-    static GType type = 0;
+    static volatile gsize type_volatile = 0;
 
-    if (type == 0) 
+    if (g_once_init_enter (&type_volatile))
     {
+        GType type;
         GTypeInfo *type_info;
 
         type_info = g_new0 (GTypeInfo, 1);
@@ -366,7 +363,11 @@ pecan_cmd_node_get_type (void)
         type_info->instance_init = instance_init;
 
         type = g_type_register_static (PECAN_NODE_TYPE, "PecanCmdNodeType", type_info, 0);
+
+        g_free (type_info);
+
+        g_once_init_leave (&type_volatile, type);
     }
 
-    return type;
+    return type_volatile;
 }
