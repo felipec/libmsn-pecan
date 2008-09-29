@@ -27,7 +27,6 @@ struct PecanNsPrivate
     PecanSession *session;
     gchar *host;
     gint port;
-    PecanCmdNode *node;
 };
 
 enum
@@ -56,25 +55,6 @@ pean_ns_free (PecanNs *ns)
     g_object_unref (G_OBJECT (ns));
 }
 
-gboolean
-pecan_ns_connect (PecanNs *ns,
-                  const gchar *host,
-                  gint port)
-{
-    g_debug ("%s", __func__);
-
-    pecan_node_connect (PECAN_NODE (ns->priv->node), host, port);
-
-    return TRUE;
-}
-
-void
-pecan_ns_disconnect (PecanNs *ns)
-{
-}
-
-/* GObject stuff. */
-
 static void
 instance_init (GTypeInstance *instance,
                gpointer g_class)
@@ -84,8 +64,6 @@ instance_init (GTypeInstance *instance,
     self->priv = G_TYPE_INSTANCE_GET_PRIVATE (instance, PECAN_NS_TYPE, PecanNsPrivate);
 
     g_debug ("instance init");
-
-    self->priv->node = pecan_cmd_node_new ("ns", 0);
 }
 
 static void
@@ -133,10 +111,6 @@ dispose (GObject *obj)
 static void
 finalize (GObject *obj)
 {
-    PecanNs *self;
-    self = PECAN_NS (obj);
-    pecan_cmd_node_free (self->priv->node);
-
     G_OBJECT_CLASS (parent_class)->finalize (obj);
 }
 
@@ -180,7 +154,7 @@ pecan_ns_get_type (void)
         type_info->instance_size = sizeof (PecanNs);
         type_info->instance_init = instance_init;
 
-        type = g_type_register_static (G_TYPE_OBJECT, "PecanNsType", type_info, 0);
+        type = g_type_register_static (PECAN_CMD_NODE_TYPE, "PecanNsType", type_info, 0);
 
         g_free (type_info);
 

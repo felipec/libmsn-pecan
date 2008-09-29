@@ -61,7 +61,7 @@ pecan_session_connect (PecanSession *session,
                        const gchar *host,
                        gint port)
 {
-    pecan_ns_connect (session->priv->ns, host, port);
+    pecan_node_connect (PECAN_NODE (session->priv->ns), host, port);
 }
 
 void

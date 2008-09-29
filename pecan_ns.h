@@ -25,16 +25,18 @@ typedef struct PecanNs PecanNs;
 typedef struct PecanNsClass PecanNsClass;
 typedef struct PecanNsPrivate PecanNsPrivate;
 
+#include "io/pecan_cmd_node_priv.h"
+
 struct PecanNs
 {
-    GObject parent;
+    PecanCmdNode parent;
 
     PecanNsPrivate *priv;
 };
 
 struct PecanNsClass
 {
-    GObjectClass parent_class;
+    PecanCmdNodeClass parent_class;
 };
 
 #define PECAN_NS_TYPE (pecan_ns_get_type ())
@@ -46,8 +48,6 @@ struct PecanNsClass
 
 PecanNs *pecan_ns_new (PecanSession *session);
 void pecan_ns_free (PecanNs *ns);
-gboolean pecan_ns_connect (PecanNs *ns, const gchar *host, gint port);
-void pecan_ns_disconnect (PecanNs *ns);
 
 GType pecan_ns_get_type (void);
 
