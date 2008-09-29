@@ -23,6 +23,7 @@
 
 typedef struct PecanCmdNode PecanCmdNode;
 typedef struct PecanCmdNodeClass PecanCmdNodeClass;
+typedef struct PecanCmdNodePrivate PecanCmdNodePrivate;
 
 #include "pecan_node.h"
 #include "pecan_node_priv.h"
@@ -31,13 +32,7 @@ struct PecanCmdNode
 {
     PecanNode parent;
 
-    gsize payload_len;
-    gchar *rx_buf;
-    gsize rx_len;
-
-#if 0
-    struct MsnCmdProc *cmdproc;
-#endif
+    PecanCmdNodePrivate *priv;
 };
 
 struct PecanCmdNodeClass

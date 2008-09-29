@@ -32,6 +32,17 @@
 
 static PecanNodeClass *parent_class = NULL;
 
+struct PecanCmdNodePrivate
+{
+    gsize payload_len;
+    gchar *rx_buf;
+    gsize rx_len;
+
+#if 0
+    struct MsnCmdProc *cmdproc;
+#endif
+};
+
 PecanCmdNode *
 pecan_cmd_node_new (const gchar *name,
                     PecanNodeType type)
@@ -91,6 +102,7 @@ parse_impl (PecanNode *base_conn,
             gsize bytes_read)
 {
     PecanCmdNode *cmd_conn;
+    PecanCmdNodePrivate *priv;
     gchar *cur, *next, *old_rx_buf;
     gint cur_len;
 
@@ -99,28 +111,29 @@ parse_impl (PecanNode *base_conn,
     pecan_debug ("conn=%p,name=%s", base_conn, base_conn->name);
 
     cmd_conn = PECAN_CMD_NODE (base_conn);
+    priv = cmd_conn->priv;
 
     buf[bytes_read] = '\0';
 
     /* append buf to rx_buf */
-    cmd_conn->rx_buf = g_realloc (cmd_conn->rx_buf, bytes_read + cmd_conn->rx_len + 1);
-    memcpy (cmd_conn->rx_buf + cmd_conn->rx_len, buf, bytes_read + 1);
-    cmd_conn->rx_len += bytes_read;
+    priv->rx_buf = g_realloc (priv->rx_buf, bytes_read + priv->rx_len + 1);
+    memcpy (priv->rx_buf + priv->rx_len, buf, bytes_read + 1);
+    priv->rx_len += bytes_read;
 
-    next = old_rx_buf = cmd_conn->rx_buf;
-    cmd_conn->rx_buf = NULL;
+    next = old_rx_buf = priv->rx_buf;
+    priv->rx_buf = NULL;
 
     do
     {
         cur = next;
 
-        if (cmd_conn->payload_len)
+        if (priv->payload_len)
         {
-            if (cmd_conn->payload_len > cmd_conn->rx_len)
+            if (priv->payload_len > priv->rx_len)
                 /* The payload is incomplete. */
                 break;
 
-            cur_len = cmd_conn->payload_len;
+            cur_len = priv->payload_len;
             next += cur_len;
         }
         else
@@ -136,27 +149,27 @@ parse_impl (PecanNode *base_conn,
             cur_len = next - cur;
         }
 
-        cmd_conn->rx_len -= cur_len;
+        priv->rx_len -= cur_len;
 
 #if 0
         if (cmd_conn->cmdproc)
         {
-            if (cmd_conn->payload_len)
+            if (priv->payload_len)
             {
                 msn_cmdproc_process_payload (cmd_conn->cmdproc, cur, cur_len);
-                cmd_conn->payload_len = 0;
+                priv->payload_len = 0;
             }
             else
             {
                 msn_cmdproc_process_cmd_text (cmd_conn->cmdproc, cur);
-                cmd_conn->payload_len = cmd_conn->cmdproc->last_cmd->payload_len;
+                priv->payload_len = cmd_conn->cmdproc->last_cmd->payload_len;
             }
         }
 #endif
-    } while (cmd_conn->rx_len > 0);
+    } while (priv->rx_len > 0);
 
-    if (cmd_conn->rx_len > 0)
-        cmd_conn->rx_buf = g_memdup (cur, cmd_conn->rx_len);
+    if (priv->rx_len > 0)
+        priv->rx_buf = g_memdup (cur, priv->rx_len);
 
     g_free (old_rx_buf);
 
@@ -167,15 +180,17 @@ static void
 close_impl (PecanNode *conn)
 {
     PecanCmdNode *cmd_conn;
+    PecanCmdNodePrivate *priv;
 
     pecan_log ("begin");
 
     cmd_conn = PECAN_CMD_NODE (conn);
+    priv = cmd_conn->priv;
 
-    g_free (cmd_conn->rx_buf);
-    cmd_conn->rx_buf = NULL;
-    cmd_conn->rx_len = 0;
-    cmd_conn->payload_len = 0;
+    g_free (priv->rx_buf);
+    priv->rx_buf = NULL;
+    priv->rx_len = 0;
+    priv->payload_len = 0;
 
 #if 0
     if (cmd_conn->cmdproc)
@@ -318,14 +333,18 @@ class_init (gpointer g_class,
     gobject_class->finalize = finalize;
 
     parent_class = g_type_class_peek_parent (g_class);
+    g_type_class_add_private (g_class, sizeof (PecanCmdNodePrivate));
 }
 
 static void
 instance_init (GTypeInstance *instance,
                gpointer g_class)
 {
-    PecanCmdNode *conn = PECAN_CMD_NODE (instance);
+    PecanCmdNode *self;
+    self = PECAN_CMD_NODE (instance);
+    self->priv = G_TYPE_INSTANCE_GET_PRIVATE (instance, PECAN_CMD_NODE_TYPE, PecanCmdNodePrivate);
 
+    g_debug ("instance init");
 #if 0
     conn->cmdproc = msn_cmdproc_new ();
 #endif
