@@ -22,13 +22,35 @@
 #include <glib-object.h>
 
 typedef struct PecanCmdNode PecanCmdNode;
+typedef struct PecanCmdNodeClass PecanCmdNodeClass;
 
 #include "pecan_node.h"
+#include "pecan_node_priv.h"
+
+struct PecanCmdNode
+{
+    PecanNode parent;
+
+    gsize payload_len;
+    gchar *rx_buf;
+    gsize rx_len;
+
+#if 0
+    struct MsnCmdProc *cmdproc;
+#endif
+};
+
+struct PecanCmdNodeClass
+{
+    PecanNodeClass parent_class;
+};
 
 #define PECAN_CMD_NODE_TYPE (pecan_cmd_node_get_type ())
 #define PECAN_CMD_NODE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PECAN_CMD_NODE_TYPE, PecanCmdNode))
 
 PecanCmdNode *pecan_cmd_node_new (const gchar *name, PecanNodeType type);
 void pecan_cmd_node_free (PecanCmdNode *conn);
+
+GType pecan_cmd_node_get_type (void);
 
 #endif /* PECAN_CMD_NODE_H */

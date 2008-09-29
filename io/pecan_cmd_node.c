@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "pecan_cmd_node_priv.h"
+#include "pecan_cmd_node.h"
 #if 0
 #include "cmd/cmdproc_private.h"
 #include "cmd/command_private.h"
