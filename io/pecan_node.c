@@ -20,7 +20,7 @@
 #include "pecan_stream.h"
 #include "pecan_log.h"
 #ifdef PECAN_SOCKET
-#include "pecan_socket.h"
+#include "io/pecan_socket.h"
 #endif /* PECAN_SOCKET */
 #include "pecan_config.h"
 

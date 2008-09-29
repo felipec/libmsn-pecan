@@ -7,12 +7,14 @@ GOBJECT_LIBS := $(shell pkg-config --libs gobject-2.0)
 CFLAGS += -Wall
 
 override CFLAGS += -I.
+override CFLAGS += -DPECAN_SOCKET
 
 objects := pecan_session.o \
 	   pecan_ns.o \
 	   pecan_printf.o \
 	   pecan_log.o \
 	   io/pecan_stream.o \
+	   io/pecan_socket.o \
 	   io/pecan_node.o \
 	   io/pecan_cmd_server.o
 
