@@ -41,6 +41,7 @@ pecan_ns_new (PecanSession *session)
 
     ns = PECAN_NS (g_object_new (PECAN_NS_TYPE,
                                  "session", session,
+                                 "name", "ns",
                                  NULL));
 
     return ns;

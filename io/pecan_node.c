@@ -28,6 +28,11 @@ void pecan_node_error (PecanNode *conn);
 
 static GObjectClass *parent_class;
 
+enum
+{
+    PROP_NAME = 1,
+};
+
 struct PecanNodePrivate
 {
     GError *error; /**< The current IO error .*/
@@ -632,6 +637,43 @@ parse_impl (PecanNode *conn,
 /* GObject stuff. */
 
 static void
+get_property (GObject *object,
+              guint property_id,
+              GValue *value,
+              GParamSpec *spec)
+{
+    PecanNode *self = PECAN_NODE (object);
+
+    switch (property_id)
+    {
+        case PROP_NAME:
+            g_value_set_string (value, self->priv->name);
+            break;
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, spec);
+    }
+}
+
+static void
+set_property (GObject *object,
+              guint property_id,
+              const GValue *value,
+              GParamSpec *spec)
+{
+    PecanNode *self = PECAN_NODE (object);
+
+    switch (property_id)
+    {
+        case PROP_NAME:
+            g_free (self->priv->name);
+            self->priv->name = g_strdup (g_value_get_string (value));
+            break;
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, spec);
+    }
+}
+
+static void
 dispose (GObject *obj)
 {
     PecanNode *conn;
@@ -684,6 +726,8 @@ class_init (gpointer g_class,
     conn_class->read = &read_impl;
     conn_class->parse = &parse_impl;
 
+    gobject_class->get_property = get_property;
+    gobject_class->set_property = set_property;
     gobject_class->dispose = dispose;
     gobject_class->finalize = finalize;
 
@@ -701,6 +745,15 @@ class_init (gpointer g_class,
                                           G_SIGNAL_RUN_FIRST, 0, NULL, NULL,
                                           g_cclosure_marshal_VOID__VOID,
                                           G_TYPE_NONE, 0);
+
+    {
+        GParamSpec *param_spec;
+
+        param_spec = g_param_spec_string ("name", "Name", "The identification of this node",
+                                          NULL,
+                                          G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+        g_object_class_install_property (gobject_class, PROP_NAME, param_spec);
+    }
 
     parent_class = g_type_class_peek_parent (g_class);
     g_type_class_add_private (g_class, sizeof (PecanNodePrivate));
