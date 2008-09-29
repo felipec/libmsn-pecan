@@ -36,18 +36,6 @@ enum
     PECAN_NODE_ERROR_WRITE
 };
 
-enum PecanNodeType
-{
-    PECAN_NODE_NULL, /**< Not set */
-    PECAN_NODE_NS, /**< Notification Server */
-    PECAN_NODE_PASSPORT, /**< Passport Server (for login) */
-    PECAN_NODE_CS, /**< Contact Server (addressbook stuff) */
-    PECAN_NODE_SB, /**< Switcbhard Server (a conversation) */
-    PECAN_NODE_HTTP, /**< HTTP gateway server */
-};
-
-typedef enum PecanNodeType PecanNodeType;
-
 struct PecanNode
 {
     GObject parent;
@@ -77,7 +65,7 @@ struct PecanNodeClass
 #define PECAN_NODE_CLASS(c) (G_TYPE_CHECK_CLASS_CAST ((c), PECAN_NODE_TYPE, PecanNodeClass))
 #define PECAN_NODE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), PECAN_NODE_TYPE, PecanNodeClass))
 
-PecanNode *pecan_node_new (gchar *name, PecanNodeType type);
+PecanNode *pecan_node_new (gchar *name);
 void pecan_node_free (PecanNode *conn);
 void pecan_node_connect (PecanNode *conn, const gchar *hostname, gint port);
 void pecan_node_close (PecanNode *conn);

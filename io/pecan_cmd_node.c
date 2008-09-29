@@ -40,8 +40,7 @@ struct PecanCmdNodePrivate
 };
 
 PecanCmdNode *
-pecan_cmd_node_new (const gchar *name,
-                    PecanNodeType type)
+pecan_cmd_node_new (const gchar *name)
 {
     PecanCmdNode *conn;
 
@@ -53,7 +52,6 @@ pecan_cmd_node_new (const gchar *name,
     {
         PecanNode *tmp = PECAN_NODE (conn);
         tmp->name = g_strdup (name);
-        tmp->type = type;
     }
 #endif
 

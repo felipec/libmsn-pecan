@@ -42,7 +42,7 @@ struct PecanCmdNodeClass
 #define PECAN_CMD_NODE_TYPE (pecan_cmd_node_get_type ())
 #define PECAN_CMD_NODE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PECAN_CMD_NODE_TYPE, PecanCmdNode))
 
-PecanCmdNode *pecan_cmd_node_new (const gchar *name, PecanNodeType type);
+PecanCmdNode *pecan_cmd_node_new (const gchar *name);
 void pecan_cmd_node_free (PecanCmdNode *conn);
 
 GType pecan_cmd_node_get_type (void);

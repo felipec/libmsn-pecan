@@ -33,8 +33,6 @@ struct PecanNodePrivate
     GError *error; /**< The current IO error .*/
     guint read_watch; /** < The source id of the read watch. */
 
-    PecanNodeType type;
-
     gchar *name;
 
     gpointer data; /**< Client data. */
@@ -204,8 +202,7 @@ error_cb (PecanNode *next,
 }
 
 PecanNode *
-pecan_node_new (gchar *name,
-                PecanNodeType type)
+pecan_node_new (gchar *name)
 {
     PecanNode *conn;
     PecanNodePrivate *priv;
@@ -216,7 +213,6 @@ pecan_node_new (gchar *name,
     priv = conn->priv;
 
     priv->name = g_strdup (name);
-    priv->type = type;
 
     pecan_log ("end");
 
