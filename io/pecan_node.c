@@ -26,7 +26,7 @@
 
 void pecan_node_error (PecanNode *conn);
 
-static GObjectClass *parent_class = NULL;
+static GObjectClass *parent_class;
 
 struct PecanNodePrivate
 {
@@ -691,8 +691,6 @@ class_init (gpointer g_class,
     gobject_class->dispose = dispose;
     gobject_class->finalize = finalize;
 
-    parent_class = g_type_class_peek_parent (g_class);
-
     conn_class->open_sig = g_signal_new ("open", G_TYPE_FROM_CLASS (gobject_class),
                                          G_SIGNAL_RUN_FIRST, 0, NULL, NULL,
                                          g_cclosure_marshal_VOID__VOID,
@@ -708,6 +706,7 @@ class_init (gpointer g_class,
                                           g_cclosure_marshal_VOID__VOID,
                                           G_TYPE_NONE, 0);
 
+    parent_class = g_type_class_peek_parent (g_class);
     g_type_class_add_private (g_class, sizeof (PecanNodePrivate));
 }
 
@@ -723,10 +722,11 @@ instance_init (GTypeInstance *instance,
 GType
 pecan_node_get_type (void)
 {
-    static GType type = 0;
+    static volatile gsize type_volatile = 0;
 
-    if (type == 0)
+    if (g_once_init_enter (&type_volatile))
     {
+        GType type;
         GTypeInfo *type_info;
 
         type_info = g_new0 (GTypeInfo, 1);
@@ -738,7 +738,9 @@ pecan_node_get_type (void)
         type = g_type_register_static (G_TYPE_OBJECT, "PecanNodeType", type_info, 0);
 
         g_free (type_info);
+
+        g_once_init_leave (&type_volatile, type);
     }
 
-    return type;
+    return type_volatile;
 }
