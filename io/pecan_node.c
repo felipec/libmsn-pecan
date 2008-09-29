@@ -26,7 +26,7 @@
 
 void pecan_node_error (PecanNode *conn);
 
-static GObjectClass *parent_class;
+static gpointer parent_class;
 
 enum
 {
@@ -323,7 +323,7 @@ pecan_node_parse (PecanNode *conn,
 static void
 connect_cb (PecanSocket *sock,
             gboolean success,
-	    gpointer user_data)
+            gpointer user_data)
 {
     PecanNode *conn;
     PecanNodePrivate *priv;
@@ -355,8 +355,8 @@ connect_cb (PecanSocket *sock,
     }
     else
     {
-	priv->error = g_error_new_literal (PECAN_NODE_ERROR, PECAN_NODE_ERROR_OPEN,
-					   "Unable to connect");
+        priv->error = g_error_new_literal (PECAN_NODE_ERROR, PECAN_NODE_ERROR_OPEN,
+                                           "Unable to connect");
 
         pecan_node_error (conn);
     }
@@ -454,7 +454,7 @@ connect_impl (PecanNode *conn,
         pecan_node_close (conn);
 
 #ifdef PECAN_SOCKET
-	pecan_socket_connect (hostname, port, connect_cb, conn);
+        pecan_socket_connect (hostname, port, connect_cb, conn);
 #endif
     }
 
