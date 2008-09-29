@@ -16,36 +16,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef MSN_CMD_CONN_PRIV_H
-#define MSN_CMD_CONN_PRIV_H
+#ifndef PECAN_CMD_NODE_H
+#define PECAN_CMD_NODE_H
 
 #include <glib-object.h>
 
-typedef struct PecanCmdServerClass PecanCmdServerClass;
+typedef struct PecanCmdNode PecanCmdNode;
 
-#include "pecan_node_priv.h"
-#include "pecan_cmd_server.h"
+#include "pecan_node.h"
 
-struct MsnCmdProc;
+#define PECAN_CMD_NODE_TYPE (pecan_cmd_node_get_type ())
+#define PECAN_CMD_NODE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PECAN_CMD_NODE_TYPE, PecanCmdNode))
 
-struct PecanCmdServer
-{
-    PecanNode parent;
+PecanCmdNode *pecan_cmd_node_new (const gchar *name, PecanNodeType type);
+void pecan_cmd_node_free (PecanCmdNode *conn);
 
-    gsize payload_len;
-    gchar *rx_buf;
-    gsize rx_len;
-
-#if 0
-    struct MsnCmdProc *cmdproc;
-#endif
-};
-
-struct PecanCmdServerClass
-{
-    PecanNodeClass parent_class;
-};
-
-GType pecan_cmd_server_get_type (void);
-
-#endif /* MSN_CMD_CONN_PRIV_H */
+#endif /* PECAN_CMD_NODE_H */

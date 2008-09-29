@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "pecan_cmd_server_priv.h"
+#include "pecan_cmd_node_priv.h"
 #if 0
 #include "cmd/cmdproc_private.h"
 #include "cmd/command_private.h"
@@ -32,15 +32,15 @@
 
 static PecanNodeClass *parent_class = NULL;
 
-PecanCmdServer *
-pecan_cmd_server_new (const gchar *name,
-                      PecanNodeType type)
+PecanCmdNode *
+pecan_cmd_node_new (const gchar *name,
+                    PecanNodeType type)
 {
-    PecanCmdServer *conn;
+    PecanCmdNode *conn;
 
     pecan_log ("begin");
 
-    conn = CMD_PECAN_NODE (g_type_create_instance (CMD_PECAN_NODE_TYPE));
+    conn = PECAN_CMD_NODE (g_type_create_instance (PECAN_CMD_NODE_TYPE));
 
     {
         PecanNode *tmp = PECAN_NODE (conn);
@@ -54,7 +54,7 @@ pecan_cmd_server_new (const gchar *name,
 }
 
 void
-pecan_cmd_server_free (PecanCmdServer *conn)
+pecan_cmd_node_free (PecanCmdNode *conn)
 {
     pecan_log ("begin");
     g_object_unref (G_OBJECT (conn));
@@ -63,10 +63,10 @@ pecan_cmd_server_free (PecanCmdServer *conn)
 
 #if 0
 void
-pecan_cmd_server_send (PecanCmdServer *conn,
-                      const gchar *command,
-                      const gchar *format,
-                      ...)
+pecan_cmd_node_send (PecanCmdNode *conn,
+                     const gchar *command,
+                     const gchar *format,
+                     ...)
 {
     va_list args;
 
@@ -90,7 +90,7 @@ parse_impl (PecanNode *base_conn,
             gchar *buf,
             gsize bytes_read)
 {
-    PecanCmdServer *cmd_conn;
+    PecanCmdNode *cmd_conn;
     gchar *cur, *next, *old_rx_buf;
     gint cur_len;
 
@@ -98,7 +98,7 @@ parse_impl (PecanNode *base_conn,
 
     pecan_debug ("conn=%p,name=%s", base_conn, base_conn->name);
 
-    cmd_conn = CMD_PECAN_NODE (base_conn);
+    cmd_conn = PECAN_CMD_NODE (base_conn);
 
     buf[bytes_read] = '\0';
 
@@ -166,11 +166,11 @@ parse_impl (PecanNode *base_conn,
 static void
 close_impl (PecanNode *conn)
 {
-    PecanCmdServer *cmd_conn;
+    PecanCmdNode *cmd_conn;
 
     pecan_log ("begin");
 
-    cmd_conn = CMD_PECAN_NODE (conn);
+    cmd_conn = PECAN_CMD_NODE (conn);
 
     g_free (cmd_conn->rx_buf);
     cmd_conn->rx_buf = NULL;
@@ -281,7 +281,7 @@ read_impl (PecanNode *conn)
 static void
 dispose (GObject *obj)
 {
-    PecanCmdServer *cmd_conn = CMD_PECAN_NODE (obj);
+    PecanCmdNode *cmd_conn = PECAN_CMD_NODE (obj);
 
     pecan_log ("begin");
 
@@ -324,7 +324,7 @@ static void
 instance_init (GTypeInstance *instance,
                gpointer g_class)
 {
-    PecanCmdServer *conn = CMD_PECAN_NODE (instance);
+    PecanCmdNode *conn = PECAN_CMD_NODE (instance);
 
 #if 0
     conn->cmdproc = msn_cmdproc_new ();
@@ -332,7 +332,7 @@ instance_init (GTypeInstance *instance,
 }
 
 GType
-pecan_cmd_server_get_type (void)
+pecan_cmd_node_get_type (void)
 {
     static GType type = 0;
 
@@ -341,12 +341,12 @@ pecan_cmd_server_get_type (void)
         GTypeInfo *type_info;
 
         type_info = g_new0 (GTypeInfo, 1);
-        type_info->class_size = sizeof (PecanCmdServerClass);
+        type_info->class_size = sizeof (PecanCmdNodeClass);
         type_info->class_init = class_init;
-        type_info->instance_size = sizeof (PecanCmdServer);
+        type_info->instance_size = sizeof (PecanCmdNode);
         type_info->instance_init = instance_init;
 
-        type = g_type_register_static (PECAN_NODE_TYPE, "PecanCmdServerType", type_info, 0);
+        type = g_type_register_static (PECAN_NODE_TYPE, "PecanCmdNodeType", type_info, 0);
     }
 
     return type;
