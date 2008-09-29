@@ -6,8 +6,15 @@ GOBJECT_LIBS := $(shell pkg-config --libs gobject-2.0)
 
 CFLAGS += -Wall
 
+override CFLAGS += -I.
+
 objects := pecan_session.o \
-	   pecan_ns.o
+	   pecan_ns.o \
+	   pecan_printf.o \
+	   pecan_log.o \
+	   io/pecan_stream.o \
+	   io/pecan_node.o \
+	   io/pecan_cmd_server.o
 
 sources := $(objects:.o=.c)
 deps := $(objects:.o=.d)
