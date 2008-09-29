@@ -20,11 +20,14 @@
 
 static gpointer parent_class;
 
+#include "io/pecan_cmd_server.h"
+
 struct PecanNsPrivate
 {
     PecanSession *session;
     gchar *host;
     gint port;
+    PecanCmdServer *node;
 };
 
 enum
@@ -60,6 +63,8 @@ pecan_ns_connect (PecanNs *ns,
 {
     g_debug ("%s", __func__);
 
+    pecan_node_connect (PECAN_NODE (ns->priv->node), host, port);
+
     return TRUE;
 }
 
@@ -79,6 +84,8 @@ instance_init (GTypeInstance *instance,
     self->priv = G_TYPE_INSTANCE_GET_PRIVATE (instance, PECAN_NS_TYPE, PecanNsPrivate);
 
     g_debug ("instance init");
+
+    self->priv->node = pecan_cmd_server_new ("ns", 0);
 }
 
 static void
@@ -126,6 +133,10 @@ dispose (GObject *obj)
 static void
 finalize (GObject *obj)
 {
+    PecanNs *self;
+    self = PECAN_NS (obj);
+    pecan_cmd_server_free (self->priv->node);
+
     G_OBJECT_CLASS (parent_class)->finalize (obj);
 }
 
