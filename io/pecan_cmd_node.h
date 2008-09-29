@@ -26,7 +26,6 @@ typedef struct PecanCmdNodeClass PecanCmdNodeClass;
 typedef struct PecanCmdNodePrivate PecanCmdNodePrivate;
 
 #include "pecan_node.h"
-#include "pecan_node_priv.h"
 
 struct PecanCmdNode
 {

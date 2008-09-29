@@ -22,8 +22,12 @@
 #include <glib-object.h>
 
 typedef struct PecanNode PecanNode;
+typedef struct PecanNodeClass PecanNodeClass;
+typedef struct PecanNodePrivate PecanNodePrivate;
 
 #define PECAN_NODE_ERROR pecan_node_error_quark ()
+
+GQuark pecan_node_error_quark (void);
 
 enum
 {
@@ -44,11 +48,33 @@ enum PecanNodeType
 
 typedef enum PecanNodeType PecanNodeType;
 
+struct PecanNode
+{
+    GObject parent;
+    gboolean dispose_has_run;
+
+    PecanNodePrivate *priv;
+};
+
+struct PecanNodeClass
+{
+    GObjectClass parent_class;
+
+    guint open_sig;
+    guint close_sig;
+    guint error_sig;
+
+    GIOStatus (*read) (PecanNode *conn, gchar *buf, gsize count, gsize *bytes_read, GError **error);
+    GIOStatus (*write) (PecanNode *conn, const gchar *buf, gsize count, gsize *bytes_written, GError **error);
+    void (*error) (PecanNode *conn);
+    void (*connect) (PecanNode *conn, const gchar *hostname, gint port);
+    void (*close) (PecanNode *conn);
+    void (*parse) (PecanNode *conn, gchar *buf, gsize bytes_read);
+};
+
 #define PECAN_NODE_TYPE (pecan_node_get_type ())
 #define PECAN_NODE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PECAN_NODE_TYPE, PecanNode))
 #define PECAN_NODE_CLASS(c) (G_TYPE_CHECK_CLASS_CAST ((c), PECAN_NODE_TYPE, PecanNodeClass))
-#define PECAN_IS_NODE(obj) (G_TYPE_CHECK_TYPE ((obj), PECAN_NODE_TYPE))
-#define PECAN_IS_NODE_CLASS(c) (G_TYPE_CHECK_CLASS_TYPE ((c), PECAN_NODE_TYPE))
 #define PECAN_NODE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), PECAN_NODE_TYPE, PecanNodeClass))
 
 PecanNode *pecan_node_new (gchar *name, PecanNodeType type);

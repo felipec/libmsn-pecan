@@ -49,11 +49,13 @@ pecan_cmd_node_new (const gchar *name,
 
     conn = PECAN_CMD_NODE (g_type_create_instance (PECAN_CMD_NODE_TYPE));
 
+#if 0
     {
         PecanNode *tmp = PECAN_NODE (conn);
         tmp->name = g_strdup (name);
         tmp->type = type;
     }
+#endif
 
     pecan_log ("end");
 
@@ -104,7 +106,9 @@ parse_impl (PecanNode *base_conn,
 
     pecan_log ("begin");
 
+#if 0
     pecan_debug ("conn=%p,name=%s", base_conn, base_conn->name);
+#endif
 
     cmd_conn = PECAN_CMD_NODE (base_conn);
     priv = cmd_conn->priv;
