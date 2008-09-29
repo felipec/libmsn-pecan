@@ -36,14 +36,14 @@ enum
 
 PecanSession *
 pecan_session_new (const gchar *username,
-		   const gchar *password)
+                   const gchar *password)
 {
     PecanSession *session;
 
     session = PECAN_SESSION (g_object_new (PECAN_SESSION_TYPE,
-					   "username", username,
-					   "password", password,
-					   NULL));
+                                           "username", username,
+                                           "password", password,
+                                           NULL));
 
     return session;
 }
@@ -52,14 +52,14 @@ void
 pecan_session_free (PecanSession *session)
 {
     if (!session)
-	return;
+        return;
     g_object_unref (G_OBJECT (session));
 }
 
 void
 pecan_session_connect (PecanSession *session,
-		       const gchar *host,
-		       gint port)
+                       const gchar *host,
+                       gint port)
 {
     pecan_ns_connect (session->priv->ns, host, port);
 }
@@ -73,7 +73,7 @@ pecan_session_disconnect (PecanSession *session)
 
 static void
 instance_init (GTypeInstance *instance,
-	       gpointer g_class)
+               gpointer g_class)
 {
     PecanSession *self;
     self = PECAN_SESSION (instance);
@@ -85,45 +85,45 @@ instance_init (GTypeInstance *instance,
 
 static void
 get_property (GObject *object,
-	      guint property_id,
-	      GValue *value,
-	      GParamSpec *spec)
+              guint property_id,
+              GValue *value,
+              GParamSpec *spec)
 {
     PecanSession *self = PECAN_SESSION (object);
 
     switch (property_id)
     {
-	case PROP_USERNAME:
-	    g_value_set_string (value, self->priv->username);
-	    break;
-	case PROP_PASSWORD:
-	    g_value_set_string (value, self->priv->password);
-	    break;
-	default:
-	    G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, spec);
+        case PROP_USERNAME:
+            g_value_set_string (value, self->priv->username);
+            break;
+        case PROP_PASSWORD:
+            g_value_set_string (value, self->priv->password);
+            break;
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, spec);
     }
 }
 
 static void
 set_property (GObject *object,
-	      guint property_id,
-	      const GValue *value,
-	      GParamSpec *spec)
+              guint property_id,
+              const GValue *value,
+              GParamSpec *spec)
 {
     PecanSession *self = PECAN_SESSION (object);
 
     switch (property_id)
     {
-	case PROP_USERNAME:
-	    g_free (self->priv->username);
-	    self->priv->username = g_utf8_strdown (g_value_get_string (value), -1);
-	    break;
-	case PROP_PASSWORD:
-	    g_free (self->priv->password);
-	    self->priv->password = g_strdup (g_value_get_string (value));
-	    break;
-	default:
-	    G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, spec);
+        case PROP_USERNAME:
+            g_free (self->priv->username);
+            self->priv->username = g_utf8_strdown (g_value_get_string (value), -1);
+            break;
+        case PROP_PASSWORD:
+            g_free (self->priv->password);
+            self->priv->password = g_strdup (g_value_get_string (value));
+            break;
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, spec);
     }
 }
 
@@ -141,7 +141,7 @@ finalize (GObject *obj)
 
 static void
 class_init (gpointer g_class,
-	    gpointer class_data)
+            gpointer class_data)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (g_class);
 
@@ -151,17 +151,17 @@ class_init (gpointer g_class,
     gobject_class->set_property = set_property;
 
     {
-	GParamSpec *param_spec;
+        GParamSpec *param_spec;
 
-	param_spec = g_param_spec_string ("username", "Username",
-					  "The username", NULL,
-					  G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-	g_object_class_install_property (gobject_class, PROP_USERNAME, param_spec);
+        param_spec = g_param_spec_string ("username", "Username",
+                                          "The username", NULL,
+                                          G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+        g_object_class_install_property (gobject_class, PROP_USERNAME, param_spec);
 
-	param_spec = g_param_spec_string ("password", "Password",
-					  "The password", NULL,
-					  G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
-	g_object_class_install_property (gobject_class, PROP_PASSWORD, param_spec);
+        param_spec = g_param_spec_string ("password", "Password",
+                                          "The password", NULL,
+                                          G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+        g_object_class_install_property (gobject_class, PROP_PASSWORD, param_spec);
     }
 
     parent_class = g_type_class_peek_parent (g_class);
@@ -175,20 +175,20 @@ pecan_session_get_type (void)
 
     if (g_once_init_enter (&type_volatile))
     {
-	GType type;
-	GTypeInfo *type_info;
+        GType type;
+        GTypeInfo *type_info;
 
-	type_info = g_new0 (GTypeInfo, 1);
-	type_info->class_size = sizeof (PecanSessionClass);
-	type_info->class_init = class_init;
-	type_info->instance_size = sizeof (PecanSession);
-	type_info->instance_init = instance_init;
+        type_info = g_new0 (GTypeInfo, 1);
+        type_info->class_size = sizeof (PecanSessionClass);
+        type_info->class_init = class_init;
+        type_info->instance_size = sizeof (PecanSession);
+        type_info->instance_init = instance_init;
 
-	type = g_type_register_static (G_TYPE_OBJECT, "PecanSessionType", type_info, 0);
+        type = g_type_register_static (G_TYPE_OBJECT, "PecanSessionType", type_info, 0);
 
-	g_free (type_info);
+        g_free (type_info);
 
-	g_once_init_leave (&type_volatile, type);
+        g_once_init_leave (&type_volatile, type);
     }
 
     return type_volatile;

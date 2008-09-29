@@ -41,8 +41,8 @@ pecan_ns_new (PecanSession *session)
     PecanNs *ns;
 
     ns = PECAN_NS (g_object_new (PECAN_NS_TYPE,
-				 "session", session,
-				 NULL));
+                                 "session", session,
+                                 NULL));
 
     return ns;
 }
@@ -51,15 +51,15 @@ void
 pean_ns_free (PecanNs *ns)
 {
     if (!ns)
-	return;
+        return;
 
     g_object_unref (G_OBJECT (ns));
 }
 
 gboolean
 pecan_ns_connect (PecanNs *ns,
-		  const gchar *host,
-		  gint port)
+                  const gchar *host,
+                  gint port)
 {
     g_debug ("%s", __func__);
 
@@ -77,7 +77,7 @@ pecan_ns_disconnect (PecanNs *ns)
 
 static void
 instance_init (GTypeInstance *instance,
-	       gpointer g_class)
+               gpointer g_class)
 {
     PecanNs *self;
     self = PECAN_NS (instance);
@@ -90,37 +90,37 @@ instance_init (GTypeInstance *instance,
 
 static void
 get_property (GObject *object,
-	      guint property_id,
-	      GValue *value,
-	      GParamSpec *spec)
+              guint property_id,
+              GValue *value,
+              GParamSpec *spec)
 {
     PecanNs *self = PECAN_NS (object);
 
     switch (property_id)
     {
-	case PROP_SESSION:
-	    g_value_set_object (value, self->priv->session);
-	    break;
-	default:
-	    G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, spec);
+        case PROP_SESSION:
+            g_value_set_object (value, self->priv->session);
+            break;
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, spec);
     }
 }
 
 static void
 set_property (GObject *object,
-	      guint property_id,
-	      const GValue *value,
-	      GParamSpec *spec)
+              guint property_id,
+              const GValue *value,
+              GParamSpec *spec)
 {
     PecanNs *self = PECAN_NS (object);
 
     switch (property_id)
     {
-	case PROP_SESSION:
-	    self->priv->session = g_value_get_object (value);
-	    break;
-	default:
-	    G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, spec);
+        case PROP_SESSION:
+            self->priv->session = g_value_get_object (value);
+            break;
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, spec);
     }
 }
 
@@ -142,7 +142,7 @@ finalize (GObject *obj)
 
 static void
 class_init (gpointer g_class,
-	    gpointer class_data)
+            gpointer class_data)
 {
     GObjectClass *gobject_class = G_OBJECT_CLASS (g_class);
 
@@ -152,12 +152,12 @@ class_init (gpointer g_class,
     gobject_class->set_property = set_property;
 
     {
-	GParamSpec *param_spec;
+        GParamSpec *param_spec;
 
-	param_spec = g_param_spec_object ("session", "Session", "The Session",
-					  PECAN_SESSION_TYPE,
-					  G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE);
-	g_object_class_install_property (gobject_class, PROP_SESSION, param_spec);
+        param_spec = g_param_spec_object ("session", "Session", "The Session",
+                                          PECAN_SESSION_TYPE,
+                                          G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE);
+        g_object_class_install_property (gobject_class, PROP_SESSION, param_spec);
     }
 
     parent_class = g_type_class_peek_parent (g_class);
@@ -171,20 +171,20 @@ pecan_ns_get_type (void)
 
     if (g_once_init_enter (&type_volatile))
     {
-	GType type;
-	GTypeInfo *type_info;
+        GType type;
+        GTypeInfo *type_info;
 
-	type_info = g_new0 (GTypeInfo, 1);
-	type_info->class_size = sizeof (PecanNsClass);
-	type_info->class_init = class_init;
-	type_info->instance_size = sizeof (PecanNs);
-	type_info->instance_init = instance_init;
+        type_info = g_new0 (GTypeInfo, 1);
+        type_info->class_size = sizeof (PecanNsClass);
+        type_info->class_init = class_init;
+        type_info->instance_size = sizeof (PecanNs);
+        type_info->instance_init = instance_init;
 
-	type = g_type_register_static (G_TYPE_OBJECT, "PecanNsType", type_info, 0);
+        type = g_type_register_static (G_TYPE_OBJECT, "PecanNsType", type_info, 0);
 
-	g_free (type_info);
+        g_free (type_info);
 
-	g_once_init_leave (&type_volatile, type);
+        g_once_init_leave (&type_volatile, type);
     }
 
     return type_volatile;
