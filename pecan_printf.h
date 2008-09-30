@@ -21,7 +21,11 @@
 
 #include <glib.h>
 
+#ifdef PECAN_DEBUG
+
 #define PECAN_CUSTOM_PRINTF
+
+/* This should only be used for debugging. */
 
 #ifdef PECAN_CUSTOM_PRINTF
 gchar *pecan_strdup_vprintf (const gchar *format, va_list args);
@@ -30,5 +34,7 @@ gchar *pecan_strdup_printf (const gchar *format, ...);
 #define pecan_strdup_vprintf g_strdup_vprintf
 #define pecan_strdup_printf g_strdup_printf
 #endif /* PECAN_CUSTOM_PRINTF */
+
+#endif /* PECAN_DEBUG */
 
 #endif /* PECAN_PRINTF_H */
