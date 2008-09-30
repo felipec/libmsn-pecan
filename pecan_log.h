@@ -23,7 +23,7 @@
 
 #define PECAN_DEBUG
 
-#if defined(PECAN_DEBUG)
+#ifdef PECAN_DEBUG
 
 enum PecanLogLevel
 {
@@ -49,7 +49,7 @@ void pecan_base_log_helper (PecanLogLevel level, const gchar *file, const gchar 
 #define pecan_debug(...) pecan_base_log (PECAN_LOG_LEVEL_DEBUG, __VA_ARGS__);
 #define pecan_log(...) pecan_base_log (PECAN_LOG_LEVEL_LOG, __VA_ARGS__);
 
-#elif !defined(PECAN_DEBUG)
+#else
 
 #define pecan_print(...) {}
 #define pecan_error(...) {}
@@ -58,6 +58,6 @@ void pecan_base_log_helper (PecanLogLevel level, const gchar *file, const gchar 
 #define pecan_debug(...) {}
 #define pecan_log(...) {}
 
-#endif /* !defined(PECAN_DEBUG) */
+#endif /* PECAN_DEBUG */
 
 #endif /* PECAN_LOG_H */
