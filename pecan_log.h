@@ -21,8 +21,6 @@
 
 #include <glib.h>
 
-#define PECAN_DEBUG
-
 #ifdef PECAN_DEBUG
 
 enum PecanLogLevel
