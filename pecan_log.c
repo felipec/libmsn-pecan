@@ -50,7 +50,7 @@ pecan_base_log_helper (guint level,
     gchar *tmp;
     va_list args;
 
-    if (level > PECAN_LOG_LEVEL_INFO)
+    if (level > PECAN_LOG_LEVEL)
         return;
 
     va_start (args, fmt);
