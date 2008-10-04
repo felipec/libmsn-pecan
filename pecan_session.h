@@ -35,6 +35,8 @@ struct PecanSession
 struct PecanSessionClass
 {
     GObjectClass parent_class;
+
+    guint error_sig;
 };
 
 #define PECAN_SESSION_TYPE (pecan_session_get_type ())

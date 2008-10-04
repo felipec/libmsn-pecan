@@ -26,6 +26,8 @@ struct PecanSessionPrivate
     gchar *username;
     gchar *password;
     PecanNs *ns;
+
+    gulong error_sig_handler;
 };
 
 enum
@@ -72,6 +74,23 @@ pecan_session_disconnect (PecanSession *session)
 /* GObject stuff. */
 
 static void
+error_cb (PecanNode *node,
+          gpointer data)
+{
+    PecanSession *session;
+    PecanSessionPrivate *priv;
+
+    session = PECAN_SESSION (data);
+    priv = session->priv;
+
+    {
+        PecanSessionClass *class;
+        class = g_type_class_peek (PECAN_SESSION_TYPE);
+        g_signal_emit (G_OBJECT (session), class->error_sig, 0, session);
+    }
+}
+
+static void
 instance_init (GTypeInstance *instance,
                gpointer g_class)
 {
@@ -80,6 +99,7 @@ instance_init (GTypeInstance *instance,
     self->priv = G_TYPE_INSTANCE_GET_PRIVATE (instance, PECAN_SESSION_TYPE, PecanSessionPrivate);
 
     self->priv->ns = pecan_ns_new (self);
+    self->priv->error_sig_handler = g_signal_connect (self->priv->ns, "error", G_CALLBACK (error_cb), self);
 }
 
 static void
@@ -129,6 +149,11 @@ set_property (GObject *object,
 static void
 dispose (GObject *obj)
 {
+    PecanSession *self;
+    self = PECAN_SESSION (obj);
+
+    g_signal_handler_disconnect (obj, self->priv->error_sig_handler);
+
     G_OBJECT_CLASS (parent_class)->dispose (obj);
 }
 
@@ -161,6 +186,14 @@ class_init (gpointer g_class,
                                           "The password", NULL,
                                           G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
         g_object_class_install_property (gobject_class, PROP_PASSWORD, param_spec);
+    }
+
+    {
+        PecanSessionClass *session_class = PECAN_SESSION_CLASS (g_class);
+        session_class->error_sig = g_signal_new ("error", G_TYPE_FROM_CLASS (gobject_class),
+                                                 G_SIGNAL_RUN_FIRST, 0, NULL, NULL,
+                                                 g_cclosure_marshal_VOID__VOID,
+                                                 G_TYPE_NONE, 0);
     }
 
     parent_class = g_type_class_peek_parent (g_class);
