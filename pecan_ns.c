@@ -18,6 +18,8 @@
 
 #include "pecan_ns.h"
 
+#include "pecan_log.h"
+
 static gpointer parent_class;
 
 #include "io/pecan_cmd_node.h"
@@ -27,6 +29,8 @@ struct PecanNsPrivate
     PecanSession *session;
     gchar *host;
     gint port;
+
+    gulong open_sig_handler;
 };
 
 enum
@@ -56,6 +60,18 @@ pean_ns_free (PecanNs *ns)
     g_object_unref (G_OBJECT (ns));
 }
 
+void
+open_cb (PecanNs *self)
+{
+    PecanNsPrivate *priv;
+
+    priv = self->priv;
+
+    g_signal_handler_disconnect (self, priv->open_sig_handler);
+}
+
+/* GObject stuff. */
+
 static void
 instance_init (GTypeInstance *instance,
                gpointer g_class)
@@ -63,6 +79,9 @@ instance_init (GTypeInstance *instance,
     PecanNs *self;
     self = PECAN_NS (instance);
     self->priv = G_TYPE_INSTANCE_GET_PRIVATE (instance, PECAN_NS_TYPE, PecanNsPrivate);
+
+    /** @todo is there a better way? */
+    self->priv->open_sig_handler = g_signal_connect (self, "open", G_CALLBACK (open_cb), NULL);
 }
 
 static void
@@ -104,6 +123,14 @@ set_property (GObject *object,
 static void
 dispose (GObject *obj)
 {
+    PecanNs *self;
+    PecanNsPrivate *priv;
+
+    self = PECAN_NS (obj);
+    priv = self->priv;
+
+    g_signal_handler_disconnect (self, priv->open_sig_handler);
+
     G_OBJECT_CLASS (parent_class)->dispose (obj);
 }
 
