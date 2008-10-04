@@ -27,7 +27,8 @@ objects := pecan_session.o \
 	   io/pecan_socket.o \
 	   io/pecan_node.o \
 	   io/pecan_cmd_node.o \
-	   cmd/pecan_transaction.o
+	   cmd/pecan_transaction.o \
+	   cmd/pecan_command.o
 
 sources := $(objects:.o=.c)
 deps := $(objects:.o=.d)
