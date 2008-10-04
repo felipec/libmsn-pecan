@@ -69,6 +69,7 @@ PecanNode *pecan_node_new (gchar *name);
 void pecan_node_free (PecanNode *conn);
 void pecan_node_connect (PecanNode *conn, const gchar *hostname, gint port);
 void pecan_node_close (PecanNode *conn);
+const gchar *pecan_node_get_name (PecanNode *conn);
 
 GIOStatus pecan_node_read (PecanNode *conn, gchar *buf, gsize count, gsize *bytes_read, GError **error);
 GIOStatus pecan_node_write (PecanNode *conn, const gchar *buf, gsize count, gsize *bytes_written, GError **error);

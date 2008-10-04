@@ -161,9 +161,7 @@ parse_impl (PecanNode *base_conn,
 
     pecan_log ("begin");
 
-#if 0
-    pecan_debug ("conn=%p,name=%s", base_conn, base_conn->name);
-#endif
+    pecan_debug ("conn=%p,name=%s", base_conn, pecan_node_get_name (base_conn));
 
     cmd_conn = PECAN_CMD_NODE (base_conn);
     priv = cmd_conn->priv;

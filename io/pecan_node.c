@@ -317,6 +317,12 @@ pecan_node_parse (PecanNode *conn,
     PECAN_NODE_GET_CLASS (conn)->parse (conn, buf, bytes_read);
 }
 
+const gchar *
+pecan_node_get_name (PecanNode *conn)
+{
+    return conn->priv->name;
+}
+
 /* PecanNode stuff. */
 
 #ifdef PECAN_SOCKET
