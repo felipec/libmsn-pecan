@@ -68,6 +68,8 @@ open_cb (PecanNs *self)
     priv = self->priv;
 
     g_signal_handler_disconnect (self, priv->open_sig_handler);
+
+    pecan_cmd_node_send (PECAN_CMD_NODE (self), "VER", "MSNP12 CVR0");
 }
 
 /* GObject stuff. */

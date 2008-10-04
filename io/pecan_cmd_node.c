@@ -17,6 +17,7 @@
  */
 
 #include "pecan_cmd_node.h"
+#include "cmd/pecan_transaction.h"
 #if 0
 #include "cmd/cmdproc_private.h"
 #include "cmd/command_private.h"
@@ -34,6 +35,8 @@ struct PecanCmdNodePrivate
     gchar *rx_buf;
     gsize rx_len;
 
+    GHashTable *transactions;
+    guint counter;
 #if 0
     struct MsnCmdProc *cmdproc;
 #endif
@@ -66,6 +69,60 @@ pecan_cmd_node_free (PecanCmdNode *conn)
     pecan_log ("begin");
     g_object_unref (G_OBJECT (conn));
     pecan_log ("end");
+}
+
+static void
+send_valist (PecanCmdNode *cmd_node,
+             const char *command,
+             const char *format,
+             va_list args)
+{
+    PecanCmdNodePrivate *priv;
+    priv = cmd_node->priv;
+
+    {
+        PecanTransaction *trans;
+
+        trans = pecan_transaction_new ();
+
+        trans->id = ++priv->counter;
+        trans->command = g_strdup (command);
+        trans->params = g_strdup_vprintf (format, args);
+
+        pecan_debug ("%u: %s: %s", trans->id, trans->command, trans->params);
+
+        g_hash_table_insert (priv->transactions, GINT_TO_POINTER (trans->id), trans);
+
+        {
+            GIOStatus status;
+            gchar *data;
+            gsize len;
+
+            data = pecan_transaction_to_string (trans);
+            len = strlen (data);
+
+            status = pecan_node_write (PECAN_NODE (cmd_node), data, len, NULL, NULL);
+
+#if 0
+            if (status != G_IO_STATUS_NORMAL)
+                pecan_node_error (cmdproc->conn);
+#endif
+
+            g_free (data);
+        }
+    }
+}
+
+void
+pecan_cmd_node_send (PecanCmdNode *cmd_node,
+                     const char *command,
+                     const char *format,
+                     ...)
+{
+    va_list args;
+    va_start (args, format);
+    send_valist (cmd_node, command, format, args);
+    va_end (args);
 }
 
 #if 0
@@ -345,6 +402,7 @@ instance_init (GTypeInstance *instance,
 #if 0
     conn->cmdproc = msn_cmdproc_new ();
 #endif
+    self->priv->transactions = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, (GDestroyNotify) pecan_transaction_free);
 }
 
 GType

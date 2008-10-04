@@ -45,6 +45,8 @@ struct PecanCmdNodeClass
 PecanCmdNode *pecan_cmd_node_new (const gchar *name);
 void pecan_cmd_node_free (PecanCmdNode *conn);
 
+void pecan_cmd_node_send (PecanCmdNode *cmd_node, const char *command, const char *format, ...);
+
 GType pecan_cmd_node_get_type (void);
 
 #endif /* PECAN_CMD_NODE_H */
