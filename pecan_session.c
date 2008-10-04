@@ -79,7 +79,6 @@ instance_init (GTypeInstance *instance,
     self = PECAN_SESSION (instance);
     self->priv = G_TYPE_INSTANCE_GET_PRIVATE (instance, PECAN_SESSION_TYPE, PecanSessionPrivate);
 
-    g_debug ("instance init");
     self->priv->ns = pecan_ns_new (self);
 }
 
