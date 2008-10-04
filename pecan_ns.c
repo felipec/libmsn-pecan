@@ -63,8 +63,6 @@ instance_init (GTypeInstance *instance,
     PecanNs *self;
     self = PECAN_NS (instance);
     self->priv = G_TYPE_INSTANCE_GET_PRIVATE (instance, PECAN_NS_TYPE, PecanNsPrivate);
-
-    g_debug ("instance init");
 }
 
 static void

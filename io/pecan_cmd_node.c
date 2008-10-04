@@ -342,7 +342,6 @@ instance_init (GTypeInstance *instance,
     self = PECAN_CMD_NODE (instance);
     self->priv = G_TYPE_INSTANCE_GET_PRIVATE (instance, PECAN_CMD_NODE_TYPE, PecanCmdNodePrivate);
 
-    g_debug ("instance init");
 #if 0
     conn->cmdproc = msn_cmdproc_new ();
 #endif
