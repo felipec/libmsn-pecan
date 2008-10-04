@@ -191,7 +191,7 @@ got_command (PecanCmdNode *cmd_node,
 #endif
 
         pecan_error ("unhandled error: [%s]",
-                     cmd->base);
+                     string);
         goto leave;
     }
 
@@ -204,7 +204,7 @@ got_command (PecanCmdNode *cmd_node,
 #endif
 
     pecan_warning ("unhandled command: [%s]",
-                   cmd->base);
+                   string);
 
 leave:
     pecan_log ("end");
