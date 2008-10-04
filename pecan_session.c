@@ -19,6 +19,8 @@
 #include "pecan_session.h"
 #include "pecan_ns.h"
 
+#include "pecan_log.h"
+
 static gpointer parent_class;
 
 struct PecanSessionPrivate
@@ -83,11 +85,15 @@ error_cb (PecanNode *node,
     session = PECAN_SESSION (data);
     priv = session->priv;
 
+    pecan_log ("begin");
+
     {
         PecanSessionClass *class;
         class = g_type_class_peek (PECAN_SESSION_TYPE);
         g_signal_emit (G_OBJECT (session), class->error_sig, 0, session);
     }
+
+    pecan_log ("end");
 }
 
 static void
