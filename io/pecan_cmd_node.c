@@ -18,6 +18,7 @@
 
 #include "pecan_cmd_node.h"
 #include "cmd/pecan_transaction.h"
+#include "cmd/pecan_command.h"
 #if 0
 #include "cmd/cmdproc_private.h"
 #include "cmd/command_private.h"
@@ -147,6 +148,68 @@ pecan_cmd_node_send (PecanCmdNode *conn,
 }
 #endif
 
+static void
+got_command (PecanCmdNode *cmd_node,
+             const char *string)
+{
+    PecanCmdNodePrivate *priv;
+    PecanCommand *cmd;
+    PecanTransaction *trans;
+
+    pecan_log ("begin");
+
+    priv = cmd_node->priv;
+    cmd = pecan_command_new_from_string (string);
+
+    if (cmd->tr_id)
+        cmd->trans = trans = g_hash_table_lookup (priv->transactions, GINT_TO_POINTER (cmd->tr_id));
+
+#if 0
+    /* transaction finished. clear timeouts. */
+    if (trans)
+        pecan_transaction_flush (trans);
+#endif
+
+    if (g_ascii_isdigit (cmd->base[0]))
+    {
+        /* error handling */
+
+#if 0
+        if (trans)
+        {
+            PecanErrorCb error_cb = NULL;
+            int error;
+
+            error = atoi (cmd->command);
+
+            if (error_cb)
+            {
+                error_cb (cmdproc, trans, error);
+                goto leave;
+            }
+        }
+#endif
+
+        pecan_error ("unhandled error: [%s]",
+                     cmd->base);
+        goto leave;
+    }
+
+#if 0
+    if (cb)
+    {
+        cb (cmdproc, cmd);
+        goto leave;
+    }
+#endif
+
+    pecan_warning ("unhandled command: [%s]",
+                   cmd->base);
+
+leave:
+    pecan_log ("end");
+}
+
 /** @todo reimplement this in a safer way (GIOChannel) */
 /** @todo add extensive tests for this */
 static void
@@ -205,19 +268,18 @@ parse_impl (PecanNode *base_conn,
         priv->rx_len -= cur_len;
 
 #if 0
-        if (cmd_conn->cmdproc)
+        if (priv->payload_len)
         {
-            if (priv->payload_len)
-            {
-                msn_cmdproc_process_payload (cmd_conn->cmdproc, cur, cur_len);
-                priv->payload_len = 0;
-            }
-            else
-            {
-                msn_cmdproc_process_cmd_text (cmd_conn->cmdproc, cur);
-                priv->payload_len = cmd_conn->cmdproc->last_cmd->payload_len;
-            }
+            got_payload (cmd_conn, cur, cur_len);
+            priv->payload_len = 0;
         }
+        else
+        {
+            got_command (cmd_conn, cur);
+            priv->payload_len = priv->last_cmd->payload_len;
+        }
+#else
+        got_command (cmd_conn, cur);
 #endif
     } while (priv->rx_len > 0);
 
