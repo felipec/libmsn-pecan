@@ -6,14 +6,18 @@ GOBJECT_LIBS := $(shell pkg-config --libs gobject-2.0)
 
 CFLAGS += -Wall
 
+override CFLAGS += -I.
+override CFLAGS += -DPECAN_SOCKET -DPECAN_DEBUG
+
 ifdef DEBUG_LEVEL
-CFLAGS += -D PECAN_LOG_LEVEL=PECAN_LOG_LEVEL_$(DEBUG_LEVEL)
+override CFLAGS += -D PECAN_LOG_LEVEL=PECAN_LOG_LEVEL_$(DEBUG_LEVEL)
 else
-CFLAGS += -D PECAN_LOG_LEVEL=PECAN_LOG_LEVEL_INFO
+override CFLAGS += -D PECAN_LOG_LEVEL=PECAN_LOG_LEVEL_INFO
 endif
 
-override CFLAGS += -I.
-override CFLAGS += -DPECAN_SOCKET -DPECAN_DEBUG -D PECAN_LOG_LEVEL=PECAN_LOG_LEVEL_INFO
+ifdef DEBUG
+override CFLAGS += -ggdb
+endif
 
 objects := pecan_session.o \
 	   pecan_ns.o \
