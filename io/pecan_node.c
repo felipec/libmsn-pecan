@@ -62,7 +62,7 @@ struct PecanNodePrivate
 GQuark
 pecan_node_error_quark (void)
 {
-    return g_quark_from_static_string ("conn-object-error-quark");
+    return g_quark_from_static_string ("pecan-node-error-quark");
 }
 
 static inline const gchar *
