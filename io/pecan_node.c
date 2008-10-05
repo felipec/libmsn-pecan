@@ -112,9 +112,10 @@ read_cb (GIOChannel *source,
             return TRUE;
         }
 
-        if (status == G_IO_STATUS_EOF)
+        if (!priv->error && status == G_IO_STATUS_EOF)
         {
-            priv->error = g_error_new (PECAN_NODE_ERROR, PECAN_NODE_ERROR_OPEN, "End of stream");
+            pecan_warning ("should not happen");
+            priv->error = g_error_new (PECAN_NODE_ERROR, PECAN_NODE_ERROR_READ, "End of stream");
         }
 
         if (priv->error)
