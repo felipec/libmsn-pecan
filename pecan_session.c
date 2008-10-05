@@ -78,6 +78,7 @@ pecan_session_disconnect (PecanSession *session)
 
 static void
 error_cb (PecanNode *node,
+          gpointer arg,
           gpointer data)
 {
     PecanSession *session;
@@ -91,7 +92,7 @@ error_cb (PecanNode *node,
     {
         PecanSessionClass *class;
         class = g_type_class_peek (PECAN_SESSION_TYPE);
-        g_signal_emit (G_OBJECT (session), class->error_sig, 0, session);
+        g_signal_emit (G_OBJECT (session), class->error_sig, 0, arg);
     }
 
     pecan_log ("end");
@@ -199,8 +200,8 @@ class_init (gpointer g_class,
         PecanSessionClass *session_class = PECAN_SESSION_CLASS (g_class);
         session_class->error_sig = g_signal_new ("error", G_TYPE_FROM_CLASS (gobject_class),
                                                  G_SIGNAL_RUN_FIRST, 0, NULL, NULL,
-                                                 g_cclosure_marshal_VOID__VOID,
-                                                 G_TYPE_NONE, 0);
+                                                 g_cclosure_marshal_VOID__POINTER,
+                                                 G_TYPE_NONE, 1, G_TYPE_POINTER);
     }
 
     parent_class = g_type_class_peek_parent (g_class);

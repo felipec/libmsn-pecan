@@ -182,6 +182,7 @@ close_cb (PecanNode *next,
 
 static void
 error_cb (PecanNode *next,
+          gpointer arg,
           gpointer data)
 {
     PecanNode *conn;
@@ -201,7 +202,7 @@ error_cb (PecanNode *next,
     {
         PecanNodeClass *class;
         class = g_type_class_peek (PECAN_NODE_TYPE);
-        g_signal_emit (G_OBJECT (conn), class->error_sig, 0, conn);
+        g_signal_emit (G_OBJECT (conn), class->error_sig, 0, arg);
     }
 
     pecan_log ("end");
@@ -249,7 +250,7 @@ pecan_node_error (PecanNode *conn)
     {
         PecanNodeClass *class;
         class = g_type_class_peek (PECAN_NODE_TYPE);
-        g_signal_emit (G_OBJECT (conn), class->error_sig, 0, conn);
+        g_signal_emit (G_OBJECT (conn), class->error_sig, 0, priv->error);
     }
 
     if (priv->error)
@@ -750,8 +751,8 @@ class_init (gpointer g_class,
 
     conn_class->error_sig = g_signal_new ("error", G_TYPE_FROM_CLASS (gobject_class),
                                           G_SIGNAL_RUN_FIRST, 0, NULL, NULL,
-                                          g_cclosure_marshal_VOID__VOID,
-                                          G_TYPE_NONE, 0);
+                                          g_cclosure_marshal_VOID__POINTER,
+                                          G_TYPE_NONE, 1, G_TYPE_POINTER);
 
     {
         GParamSpec *param_spec;
