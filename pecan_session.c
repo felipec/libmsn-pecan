@@ -71,6 +71,7 @@ pecan_session_connect (PecanSession *session,
 void
 pecan_session_disconnect (PecanSession *session)
 {
+    pecan_node_close (PECAN_NODE (session->priv->ns));
 }
 
 /* GObject stuff. */
