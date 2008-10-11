@@ -74,6 +74,12 @@ pecan_session_disconnect (PecanSession *session)
     pecan_node_close (PECAN_NODE (session->priv->ns));
 }
 
+const gchar *
+pecan_session_get_username (PecanSession *session)
+{
+    return session->priv->username;
+}
+
 /* GObject stuff. */
 
 static void

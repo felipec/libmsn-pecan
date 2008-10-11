@@ -48,6 +48,7 @@ PecanSession *pecan_session_new (const gchar *username, const gchar *password);
 void pecan_session_free (PecanSession *session);
 void pecan_session_connect (PecanSession *session, const gchar *host, gint port);
 void pecan_session_disconnect (PecanSession *session);
+const gchar *pecan_session_get_username (PecanSession *session);
 
 GType pecan_session_get_type (void);
 

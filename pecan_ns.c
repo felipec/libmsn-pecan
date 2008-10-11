@@ -64,6 +64,11 @@ static void
 ver_cb (GObject *obj,
         PecanCommand *command)
 {
+    PecanNs *ns;
+    ns = PECAN_NS (obj);
+    pecan_cmd_node_send (PECAN_CMD_NODE (ns), NULL,
+                         "CVR", "0x0409 winnt 5.1 i386 MSNMSGR 6.0.0602 MSMSGS %s",
+                         pecan_session_get_username (ns->priv->session));
 }
 
 void
