@@ -71,7 +71,7 @@ ver_cb (GObject *obj,
                          pecan_session_get_username (ns->priv->session));
 }
 
-void
+static void
 open_cb (PecanNs *self)
 {
     PecanNsPrivate *priv;
