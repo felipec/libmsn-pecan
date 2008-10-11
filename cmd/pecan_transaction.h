@@ -20,14 +20,20 @@
 #define PECAN_TRANSACTION_H
 
 #include <glib.h>
+#include <glib-object.h>
 
 typedef struct PecanTransaction PecanTransaction;
+
+#include "pecan_command.h"
+
+typedef void (*PecanTransactionCb) (GObject *node, PecanCommand *command);
 
 struct PecanTransaction
 {
     gint id;
     gint timer;
     gpointer user_data;
+    PecanTransactionCb cb;
 
     /* command info */
     gchar *command;

@@ -74,6 +74,7 @@ pecan_cmd_node_free (PecanCmdNode *conn)
 
 static void
 send_valist (PecanCmdNode *cmd_node,
+             PecanTransactionCb cb,
              const char *command,
              const char *format,
              va_list args)
@@ -89,6 +90,7 @@ send_valist (PecanCmdNode *cmd_node,
         trans->id = ++priv->counter;
         trans->command = g_strdup (command);
         trans->params = g_strdup_vprintf (format, args);
+        trans->cb = cb;
 
         pecan_debug ("%u: %s: %s", trans->id, trans->command, trans->params);
 
@@ -116,13 +118,14 @@ send_valist (PecanCmdNode *cmd_node,
 
 void
 pecan_cmd_node_send (PecanCmdNode *cmd_node,
+                     PecanTransactionCb cb,
                      const char *command,
                      const char *format,
                      ...)
 {
     va_list args;
     va_start (args, format);
-    send_valist (cmd_node, command, format, args);
+    send_valist (cmd_node, cb, command, format, args);
     va_end (args);
 }
 
@@ -155,6 +158,7 @@ got_command (PecanCmdNode *cmd_node,
     PecanCmdNodePrivate *priv;
     PecanCommand *cmd;
     PecanTransaction *trans;
+    PecanTransactionCb cb;
 
     pecan_log ("begin");
 
@@ -195,13 +199,14 @@ got_command (PecanCmdNode *cmd_node,
         goto leave;
     }
 
-#if 0
+    if (trans)
+        cb = trans->cb;
+
     if (cb)
     {
-        cb (cmdproc, cmd);
+        cb (G_OBJECT (cmd_node), cmd);
         goto leave;
     }
-#endif
 
     pecan_warning ("unhandled command: [%s]",
                    string);

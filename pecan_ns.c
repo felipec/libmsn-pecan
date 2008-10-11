@@ -60,6 +60,12 @@ pean_ns_free (PecanNs *ns)
     g_object_unref (G_OBJECT (ns));
 }
 
+static void
+ver_cb (GObject *obj,
+        PecanCommand *command)
+{
+}
+
 void
 open_cb (PecanNs *self)
 {
@@ -69,7 +75,8 @@ open_cb (PecanNs *self)
 
     g_signal_handler_disconnect (self, priv->open_sig_handler);
 
-    pecan_cmd_node_send (PECAN_CMD_NODE (self), "VER", "MSNP12 CVR0");
+    pecan_cmd_node_send (PECAN_CMD_NODE (self), ver_cb,
+                         "VER", "MSNP12 CVR0");
 }
 
 /* GObject stuff. */
