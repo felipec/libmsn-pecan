@@ -24,6 +24,8 @@ static gpointer parent_class;
 
 #include "io/pecan_cmd_node.h"
 
+#include <string.h> /* for strcmp */
+
 struct PecanNsPrivate
 {
     PecanSession *session;
@@ -61,12 +63,37 @@ pean_ns_free (PecanNs *ns)
 }
 
 static void
-ver_cb (GObject *obj,
-        PecanCommand *command)
+usr_cb (GObject *obj,
+        PecanCommand *cmd)
+{
+    if (strcmp (cmd->paramv[1], "OK") == 0)
+    {
+        pecan_debug ("logged in");
+    }
+    else if (strcmp (cmd->paramv[1], "TWN") == 0)
+    {
+        pecan_debug ("passport authentication");
+    }
+}
+
+static void
+cvr_cb (GObject *obj,
+        PecanCommand *cmd)
 {
     PecanNs *ns;
     ns = PECAN_NS (obj);
-    pecan_cmd_node_send (PECAN_CMD_NODE (ns), NULL,
+    pecan_cmd_node_send (PECAN_CMD_NODE (ns), usr_cb,
+                         "USR", "TWN I %s",
+                         pecan_session_get_username (ns->priv->session));
+}
+
+static void
+ver_cb (GObject *obj,
+        PecanCommand *cmd)
+{
+    PecanNs *ns;
+    ns = PECAN_NS (obj);
+    pecan_cmd_node_send (PECAN_CMD_NODE (ns), cvr_cb,
                          "CVR", "0x0409 winnt 5.1 i386 MSNMSGR 6.0.0602 MSMSGS %s",
                          pecan_session_get_username (ns->priv->session));
 }
