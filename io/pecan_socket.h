@@ -21,6 +21,8 @@
 
 #include <glib.h>
 
+G_BEGIN_DECLS
+
 typedef struct PecanSocket PecanSocket;
 
 typedef void (*PecanSocketCb) (PecanSocket *sock, gboolean success, gpointer user_data);
@@ -31,5 +33,7 @@ struct PecanSocket
 };
 
 void pecan_socket_connect (const gchar *hostname, guint port, PecanSocketCb connect_cb, gpointer user_data);
+
+G_END_DECLS
 
 #endif /* PECAN_SOCKET_H */
