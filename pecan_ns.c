@@ -84,6 +84,11 @@ xfr_cmd (GObject *obj,
             port = 1863;
     }
 
+    pecan_info ("transferring to %s:%i", host, port);
+
+    pecan_node_close (PECAN_NODE (obj));
+    pecan_node_connect (PECAN_NODE (obj), host, port);
+
     g_free (host);
 }
 
@@ -129,8 +134,6 @@ open_cb (PecanNs *self)
     PecanNsPrivate *priv;
 
     priv = self->priv;
-
-    g_signal_handler_disconnect (self, priv->open_sig_handler);
 
     pecan_cmd_node_send (PECAN_CMD_NODE (self), ver_cb,
                          "VER", "MSNP12 CVR0");
