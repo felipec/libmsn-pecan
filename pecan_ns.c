@@ -63,6 +63,31 @@ pean_ns_free (PecanNs *ns)
 }
 
 static void
+xfr_cmd (GObject *obj,
+         PecanCommand *cmd)
+{
+    char *host;
+    int port;
+
+    /* parse host info */
+    {
+        char *c;
+
+        host = g_strdup (cmd->paramv[2]);
+
+        if ((c = strchr (host, ':')))
+        {
+            *c = '\0';
+            port = atoi (c + 1);
+        }
+        else
+            port = 1863;
+    }
+
+    g_free (host);
+}
+
+static void
 usr_cb (GObject *obj,
         PecanCommand *cmd)
 {
@@ -123,6 +148,8 @@ instance_init (GTypeInstance *instance,
 
     /** @todo is there a better way? */
     self->priv->open_sig_handler = g_signal_connect (self, "open", G_CALLBACK (open_cb), NULL);
+
+    pecan_cmd_node_add_cb (self, "XFR", xfr_cmd);
 }
 
 static void
