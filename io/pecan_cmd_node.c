@@ -172,6 +172,8 @@ got_command (PecanCmdNode *cmd_node,
 
     pecan_log ("begin");
 
+    pecan_debug ("string=[%s]", string);
+
     priv = cmd_node->priv;
     cmd = pecan_command_new_from_string (string);
 
