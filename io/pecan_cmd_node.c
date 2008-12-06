@@ -41,6 +41,8 @@ struct PecanCmdNodePrivate
 #if 0
     struct MsnCmdProc *cmdproc;
 #endif
+
+    GHashTable *callbacks;
 };
 
 PecanCmdNode *
@@ -129,6 +131,14 @@ pecan_cmd_node_send (PecanCmdNode *cmd_node,
     va_end (args);
 }
 
+void
+pecan_cmd_node_add_cb (PecanCmdNode *cmd_node,
+                       const char *command,
+                       PecanTransactionCb cb)
+{
+    g_hash_table_insert (cmd_node->priv->callbacks, g_strdup (command), cb);
+}
+
 #if 0
 void
 pecan_cmd_node_send (PecanCmdNode *conn,
@@ -199,7 +209,11 @@ got_command (PecanCmdNode *cmd_node,
         goto leave;
     }
 
-    if (trans)
+    /* first check general callbacks. */
+    cb = g_hash_table_lookup (cmd_node->priv->callbacks, cmd->base);
+
+    /* now the specific set callback. */
+    if (!cb && trans)
         cb = trans->cb;
 
     if (cb)
@@ -436,6 +450,10 @@ dispose (GObject *obj)
 static void
 finalize (GObject *obj)
 {
+    PecanCmdNode *self = PECAN_CMD_NODE (obj);
+
+    g_hash_table_destroy (self->priv->callbacks);
+
     G_OBJECT_CLASS (parent_class)->finalize (obj);
 }
 
@@ -468,6 +486,8 @@ instance_init (GTypeInstance *instance,
     conn->cmdproc = msn_cmdproc_new ();
 #endif
     self->priv->transactions = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, (GDestroyNotify) pecan_transaction_free);
+
+    self->priv->callbacks = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 }
 
 GType

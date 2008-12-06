@@ -51,6 +51,10 @@ void pecan_cmd_node_send (PecanCmdNode *cmd_node,
                           const char *command,
                           const char *format, ...);
 
+void pecan_cmd_node_add_cb (PecanCmdNode *cmd_node,
+                            const char *command,
+                            PecanTransactionCb cb);
+
 GType pecan_cmd_node_get_type (void);
 
 #endif /* PECAN_CMD_NODE_H */
