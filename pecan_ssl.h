@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 Felipe Contreras.
+ * Copyright (C) 2006-2008 Felipe Contreras
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,17 +16,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02111-1301  USA
  */
 
-#include "pecan_core.h"
-#include "pecan_ssl.h"
+#ifndef PECAN_SSL_H
+#define PECAN_SSL_H
 
-void
-pecan_core_init (void)
-{
-    pecan_ssl_init ();
-}
+#include <glib.h>
 
-void
-pecan_core_deinit (void)
-{
-    pecan_ssl_deinit ();
-}
+typedef struct PecanSsl PecanSsl;
+
+gboolean pecan_ssl_init (void);
+void pecan_ssl_deinit (void);
+PecanSsl *pecan_ssl_new (void);
+void pecan_ssl_connect (PecanSsl *ssl, gint fd);
+void pecan_ssl_free (PecanSsl *ssl);
+GIOStatus pecan_ssl_read (PecanSsl *ssl, gchar *buf, gsize count, gsize *bytes_read, GError **error);
+GIOStatus pecan_ssl_write (PecanSsl *ssl, const gchar *buf, gsize count, gsize *bytes_written, GError **error);
+
+#endif /* PECAN_SSL_H */

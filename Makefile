@@ -4,6 +4,9 @@ RM := rm -f
 GOBJECT_CFLAGS := $(shell pkg-config --cflags gobject-2.0)
 GOBJECT_LIBS := $(shell pkg-config --libs gobject-2.0)
 
+NSS_CFLAGS := $(shell pkg-config --cflags nss)
+NSS_LIBS := $(shell pkg-config --libs nss)
+
 SIMPLE_WARNINGS := -Wextra -ansi -std=c99 -Wno-unused-parameter
 
 CFLAGS += -Wall $(SIMPLE_WARNINGS)
@@ -26,6 +29,7 @@ objects := pecan_core.o \
 	   pecan_ns.o \
 	   pecan_printf.o \
 	   pecan_log.o \
+	   pecan_ssl.o \
 	   io/pecan_stream.o \
 	   io/pecan_socket.o \
 	   io/pecan_node.o \
@@ -54,8 +58,8 @@ endif
 
 target = libmsn-pecan.so
 $(target): $(objects)
-$(target): CFLAGS := $(CFLAGS) $(GOBJECT_CFLAGS) -D VERSION='"$(version)"'
-$(target): LIBS := $(GOBJECT_LIBS)
+$(target): CFLAGS := $(CFLAGS) $(GOBJECT_CFLAGS) $(NSS_CFLAGS) -D VERSION='"$(version)"'
+$(target): LIBS := $(GOBJECT_LIBS) $(NSS_LIBS)
 all: $(target)
 
 %.so::
