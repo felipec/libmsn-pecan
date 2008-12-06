@@ -49,11 +49,15 @@ P = @printf "[%s] $@\n" # <- space before hash is important!!!
 Q = @
 endif
 
-target = libmsn-pecan.a
+target = libmsn-pecan.so
 $(target): $(objects)
 $(target): CFLAGS := $(CFLAGS) $(GOBJECT_CFLAGS) -D VERSION='"$(version)"'
 $(target): LIBS := $(GOBJECT_LIBS)
 all: $(target)
+
+%.so::
+	$(P)SHLIB
+	$(Q)$(CC) $(LDFLAGS) -shared -o $@ $^ $(LIBS)
 
 %.a::
 	$(P)ARCHIVE
