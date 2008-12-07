@@ -4,7 +4,9 @@ RM := rm -f
 GOBJECT_CFLAGS := $(shell pkg-config --cflags gobject-2.0)
 GOBJECT_LIBS := $(shell pkg-config --libs gobject-2.0)
 
-CFLAGS += -Wall
+SIMPLE_WARNINGS := -Wextra -ansi -std=c99 -Wno-unused-parameter
+
+CFLAGS += -Wall $(SIMPLE_WARNINGS)
 
 override CFLAGS += -I.
 override CFLAGS += -DPECAN_SOCKET -DPECAN_DEBUG
