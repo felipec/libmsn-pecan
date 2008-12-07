@@ -1,1 +1,5 @@
+*.d
+*.o
 libmsn-pecan.a
+libmsn-pecan.so
+example/test
