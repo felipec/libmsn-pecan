@@ -22,10 +22,20 @@
 #include <string.h>
 
 PecanStream *
-pecan_stream_new (gint fd)
+pecan_stream_new (gint fd,
+                  gboolean ssl)
 {
     PecanStream *stream;
     stream = g_new (PecanStream, 1);
+    if (ssl)
+    {
+        stream->ssl = pecan_ssl_new ();
+        pecan_ssl_connect (stream->ssl, fd);
+    }
+    else
+    {
+        stream->ssl = NULL;
+    }
     stream->channel = g_io_channel_unix_new (fd);
 #ifdef PECAN_DUMP_FILE
     stream->dump = FALSE;
@@ -38,6 +48,9 @@ pecan_stream_free (PecanStream *stream)
 {
     if (!stream)
         return;
+
+    if (stream->ssl)
+        pecan_ssl_free (stream->ssl);
 
     g_io_channel_shutdown (stream->channel, FALSE, NULL);
     g_io_channel_unref (stream->channel);
@@ -67,8 +80,15 @@ pecan_stream_read (PecanStream *stream,
     }
 #endif /* defined(PECAN_STREAM_RANDOM_ERRORS) */
 
-    status = g_io_channel_read_chars (stream->channel, buf, count,
-                                      &tmp_bytes_read, &tmp_error);
+    if (!stream->ssl)
+    {
+        status = g_io_channel_read_chars (stream->channel, buf, count,
+                                          &tmp_bytes_read, &tmp_error);
+    }
+    else
+    {
+        status = pecan_ssl_read (stream->ssl, buf, count, &tmp_bytes_read, NULL);
+    }
 
 #ifdef PECAN_DUMP_FILE
     if (stream->dump)
@@ -113,8 +133,15 @@ pecan_stream_write (PecanStream *stream,
     }
 #endif /* defined(PECAN_STREAM_RANDOM_ERRORS) */
 
-    status = g_io_channel_write_chars (stream->channel, buf, count,
-                                       &tmp_bytes_written, &tmp_error);
+    if (!stream->ssl)
+    {
+        status = g_io_channel_write_chars (stream->channel, buf, count,
+                                           &tmp_bytes_written, &tmp_error);
+    }
+    else
+    {
+        status = pecan_ssl_write (stream->ssl, buf, count, &tmp_bytes_written, NULL);
+    }
 
 #ifdef PECAN_DUMP_FILE
     if (stream->dump)
@@ -153,8 +180,15 @@ pecan_stream_read_full (PecanStream *stream,
     {
         GError *tmp_error = NULL;
 
-        status = g_io_channel_read_chars (stream->channel, buf, count,
-                                          &tmp_bytes_read, &tmp_error);
+        if (!stream->ssl)
+        {
+            status = g_io_channel_read_chars (stream->channel, buf, count,
+                                              &tmp_bytes_read, &tmp_error);
+        }
+        else
+        {
+            status = pecan_ssl_read (stream->ssl, buf, count, &tmp_bytes_read, NULL);
+        }
 
         if (status == G_IO_STATUS_AGAIN)
             continue;
@@ -195,8 +229,15 @@ pecan_stream_write_full (PecanStream *stream,
     {
         GError *tmp_error = NULL;
 
-        status = g_io_channel_write_chars (stream->channel, buf, count,
-                                           &tmp_bytes_written, &tmp_error);
+        if (!stream->ssl)
+        {
+            status = g_io_channel_write_chars (stream->channel, buf, count,
+                                               &tmp_bytes_written, &tmp_error);
+        }
+        else
+        {
+            status = pecan_ssl_write (stream->ssl, buf, count, &tmp_bytes_written, NULL);
+        }
 
         if (status == G_IO_STATUS_AGAIN)
             continue;

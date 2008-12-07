@@ -348,7 +348,7 @@ connect_cb (PecanSocket *sock,
     {
         GIOChannel *channel;
 
-        priv->stream = pecan_stream_new (sock->fd);
+        priv->stream = pecan_stream_new (sock->fd, conn->ssl);
         channel = priv->stream->channel;
 
         g_io_channel_set_encoding (channel, NULL, NULL);
@@ -397,7 +397,7 @@ connect_cb (gpointer data,
     {
         GIOChannel *channel;
 
-        priv->stream = pecan_stream_new (source);
+        priv->stream = pecan_stream_new (source, conn->ssl);
         channel = priv->stream->channel;
 
         g_io_channel_set_encoding (channel, NULL, NULL);

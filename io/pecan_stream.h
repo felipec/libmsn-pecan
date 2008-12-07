@@ -23,15 +23,18 @@
 
 typedef struct PecanStream PecanStream;
 
+#include "pecan_ssl.h"
+
 struct PecanStream
 {
     GIOChannel *channel;
+    PecanSsl *ssl;
 #ifdef PECAN_DUMP_FILE
     gboolean dump;
 #endif /* PECAN_DUMP_FILE */
 };
 
-PecanStream *pecan_stream_new (gint source);
+PecanStream *pecan_stream_new (gint source, gboolean ssl);
 void pecan_stream_free (PecanStream *stream);
 GIOStatus pecan_stream_read (PecanStream *stream, gchar *buf, gsize count, gsize *bytes_read, GError **error);
 GIOStatus pecan_stream_write (PecanStream *stream, const gchar *buf, gsize count, gsize *bytes_written, GError **error);

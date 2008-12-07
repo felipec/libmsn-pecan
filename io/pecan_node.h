@@ -42,6 +42,7 @@ struct PecanNode
     gboolean dispose_has_run;
 
     PecanNodePrivate *priv;
+    gboolean ssl;
 };
 
 struct PecanNodeClass
