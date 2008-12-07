@@ -3,3 +3,4 @@
 libmsn-pecan.a
 libmsn-pecan.so
 example/test
+example/ssl

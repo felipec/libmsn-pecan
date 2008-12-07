@@ -12,11 +12,27 @@ override CFLAGS += -I.
 
 .PHONY: clean
 
+all:
+
 test_objects := test.o
+
+test: $(test_objects)
+test: CFLAGS := $(CFLAGS) $(GOBJECT_CFLAGS) $(LIBMSN_PECAN_CFLAGS)
+test: LIBS := $(GOBJECT_LIBS) $(LIBMSN_PECAN_LIBS)
 
 objects += $(test_objects)
 deps += $(test_objects:.o=.d)
 bins += test
+
+ssl_objects := ssl.o
+
+ssl: $(ssl_objects)
+ssl: CFLAGS := $(CFLAGS) $(GOBJECT_CFLAGS) $(LIBMSN_PECAN_CFLAGS)
+ssl: LIBS := $(GOBJECT_LIBS) $(LIBMSN_PECAN_LIBS)
+
+objects += $(ssl_objects)
+deps += $(ssl_objects:.o=.d)
+bins += ssl
 
 all: $(bins)
 
@@ -28,10 +44,6 @@ else
 P = @printf "[%s] $@\n" # <- space before hash is important!!!
 Q = @
 endif
-
-test: $(test_objects)
-test: CFLAGS := $(CFLAGS) $(GOBJECT_CFLAGS) $(LIBMSN_PECAN_CFLAGS)
-test: LIBS := $(GOBJECT_LIBS) $(LIBMSN_PECAN_LIBS)
 
 $(bins):
 	$(P)LINK
