@@ -21,7 +21,8 @@ ifdef DEBUG
 override CFLAGS += -ggdb
 endif
 
-objects := pecan_session.o \
+objects := pecan_core.o \
+	   pecan_session.o \
 	   pecan_ns.o \
 	   pecan_printf.o \
 	   pecan_log.o \

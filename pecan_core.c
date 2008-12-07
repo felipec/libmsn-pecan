@@ -1,5 +1,5 @@
-/**
- * Copyright (C) 2008 Felipe Contreras
+/*
+ * Copyright (C) 2008 Felipe Contreras.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,41 +17,13 @@
  */
 
 #include "pecan_core.h"
-#include "pecan_session.h"
 
-GMainLoop *loop;
-
-static gboolean
-idle (gpointer data)
+void
+pecan_core_init (void)
 {
-    PecanSession *session;
-    session = (PecanSession *) data;
-
-    pecan_session_connect (session, "messenger.hotmail.com", 1863);
-    g_debug ("connecting");
-
-    return FALSE;
 }
 
-int
-main (int argc,
-      char *argv[])
+void
+pecan_core_deinit (void)
 {
-    PecanSession *session;
-
-    g_type_init ();
-    /* g_thread_init (NULL); */
-    loop = g_main_loop_new (NULL, FALSE);
-
-    pecan_core_init ();
-    session = pecan_session_new (argv[1], argv[2]);
-
-    g_idle_add (idle, session);
-    g_main_loop_run (loop);
-
-    pecan_session_free (session);
-
-    pecan_core_deinit ();
-
-    return 0;
 }
