@@ -432,11 +432,11 @@ read_impl (PecanNode *conn)
 static void
 dispose (GObject *obj)
 {
-    PecanCmdNode *cmd_conn = PECAN_CMD_NODE (obj);
-
     pecan_log ("begin");
 
 #if 0
+    PecanCmdNode *cmd_conn = PECAN_CMD_NODE (obj);
+
     if (cmd_conn->cmdproc)
     {
         msn_cmdproc_destroy (cmd_conn->cmdproc);

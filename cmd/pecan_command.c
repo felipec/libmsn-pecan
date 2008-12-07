@@ -19,6 +19,7 @@
 #include "pecan_command.h"
 
 #include <string.h>
+#include <stdlib.h> /* for atoi */
 
 static inline gboolean
 is_num (const char *str)
